@@ -1,54 +1,39 @@
 <?php
 
-namespace Sandaffo\LaravelModelValidator;
+namespace SandeepDaffodil\LaravelModelValidator;
 
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Database\Eloquent\Model;
 
-class ModelExtensions
+trait ModelExtensions
 {
-    public static function boot()
-    {
-        Model::macro('validate', function () {
-            $rules = $this->getValidationRules();
-            $messages = $this->getValidationMessages();
+    protected static $rules = [];
+    protected static $messages = [];
 
-            $validator = Validator::make($this->attributes, $rules, $messages);
+    public static function bootModelExtensions()
+    {
+        static::saving(function ($model) {
+            $validator = Validator::make($model->attributesToArray(), static::$rules, static::$messages);
 
             if ($validator->fails()) {
-                $this->validationErrors = $validator->errors()->messages();
-            } else {
-                $this->validationErrors = [];
+                throw new \Illuminate\Validation\ValidationException($validator);
             }
-
-            return $validator;
         });
+    }
 
-        Model::macro('isValid', function () {
-            return empty($this->validationErrors);
-        });
+    public function isValid()
+    {
+        $validator = Validator::make($this->attributesToArray(), static::$rules, static::$messages);
+        return !$validator->fails();
+    }
 
-        Model::macro('errors', function () {
-            return $this->validationErrors ?? [];
-        });
+    public function errors()
+    {
+        $validator = Validator::make($this->attributesToArray(), static::$rules, static::$messages);
+        return $validator->errors()->messages();
+    }
 
-        Model::macro('errorMessages', function () {
-            $messages = [];
-            foreach ($this->errors() as $field => $errors) {
-                foreach ($errors as $error) {
-                    $messages[$field][] = $error;
-                }
-            }
-            return $messages;
-        });
-
-        Model::macro('getValidationRules', function () {
-            return isset(static::$rules) ? static::$rules : [];
-        });
-
-        Model::macro('getValidationMessages', function () {
-            return isset(static::$messages) ? static::$messages : [];
-        });
+    public function errorMessages()
+    {
+        return array_values($this->errors());
     }
 }

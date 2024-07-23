@@ -8,7 +8,10 @@ class ServiceProvider extends LaravelServiceProvider
 {
     public function boot()
     {
-        ModelExtensions::boot();
+        // Register model extensions
+        $this->app->afterResolving('Illuminate\Database\Eloquent\Model', function ($model) {
+            $model->addTrait(ModelExtensions::class);
+        });
     }
 
     public function register()

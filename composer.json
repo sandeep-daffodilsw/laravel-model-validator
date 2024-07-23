@@ -1,0 +1,30 @@
+{
+  "name": "sandaffo/laravel-model-validator",
+  "description": "A Laravel package to add validation methods directly to Eloquent models",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Sandeep Daffodil",
+      "email": "sandeep.k@daffodilsw.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "illuminate/support": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sandaffo\\LaravelModelValidator\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Sandaffo\\LaravelModelValidator\\ServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

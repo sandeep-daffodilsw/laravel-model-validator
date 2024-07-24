@@ -21,19 +21,18 @@ To add validation to a model, define the `rules` and `messages` properties in yo
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Sandaffo\LaravelModelValidator\ModelExtensions;
 
 class Post extends Model
 {
-    use ModelExtensions;
-
-    protected static \$rules = [
+    // define rules array
+    public static $rules = [
         'title' => 'required|string|max:255',
         'slug' => 'required|string|max:255|unique:posts',
         'description' => 'required|string|min:8',
     ];
 
-    protected static \$messages = [
+    // messages are optional, only provide when want customize message
+    public static $messages = [
         'title.required' => 'The title field is required.',
         'slug.required' => 'The slug field is required.',
         'description.required' => 'The description field is required.',
@@ -46,57 +45,55 @@ class Post extends Model
 Below is an example demonstrating the usage of the package:
 
 ```php
-\$p = new Post();
-\$p->title = "Test Post One";
-\$p->slug = "test-post-one";
-\$p->description = "Test post one description";
+$p = new Post();
+$p->title = "Test Post One";
+$p->slug = "test-post-one";
+$p->description = "Test post one description";
 
-if (\$p->isValid()) {
-    echo "Post is valid
-";
-    \$p->save();
+if ($p->isValid()) { // $p->isValid() returns true or false
+    echo "Post is valid";
+    $p->save();
 } else {
-    echo "Post is not valid
-";
-    print_r(\$p->errors());
+    echo "Post is not valid";
+    print_r($p->errors());
 }
 ```
 
 ### Tinker Example
 
 ```bash
-\$ php artisan tinker
+$ php artisan tinker
 ```
 
 ```php
-\$p = new Post();
-\$p->title = "Test Post One";
-\$p->slug = "test-post-one";
-\$p->description = "Test post one description";
+$p = new Post();
+$p->title = "Test Post One";
+$p->slug = "test-post-one";
+$p->description = "Test post one description";
 
-\$p->isValid(); // true
-\$p->errors(); // []
+$p->isValid(); // true or false
+$p->errors(); // []
 
-\$p->errorMessages(); // []
+$p->errorMessages(); // [] single dimensional array of all error messages
 
-\$p->getRules();
+$p->getRules(); // to get the defined rules if you need somewhere
 // [
 //     "title" => "required|string|max:255",
 //     "slug" => "required|string|max:255|unique:posts",
 //     "description" => "required|string|min:8",
 // ]
 
-\$p->getMessages(); // []
+$p->getMessages(); // [] of defined custom error messages
 
-\$p->getValidator();
+$p->getValidator(); // return Validator object if you need
 // Illuminate\Validation\Validator { ... }
 
-\$p->getValidator()->errors();
+$p->getValidator()->errors();
 // Illuminate\Support\MessageBag { ... }
 
-\$p->save(); // true
+$p->save(); // true
 
-\$p;
+$p;
 // App\Models\Post {
 //     title: "Test Post One",
 //     slug: "test-post-one",

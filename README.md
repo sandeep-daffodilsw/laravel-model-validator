@@ -3,6 +3,10 @@
 
 A Laravel package to add validation rules and messages at the model level.
 
+After install this package, you don't need to write the validation rules inside controller or form request, you can add them inside model and directly use methods to validate.
+
+Adding validation rules inside model itself makes model readable for developers.
+
 ## Installation
 
 Install the package via composer:
